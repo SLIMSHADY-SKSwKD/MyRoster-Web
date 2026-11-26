@@ -9,3 +9,4 @@
 .trainingCard{border:1px solid #9876c866;border-radius:13px;padding:12px;margin:12px 0}.trainingCard h3{margin:0}.trainingTitle{font-size:14px;font-weight:600;margin-top:4px}.trainingMini{display:block;font-size:9px;max-width:100%;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;line-height:1.2}
 
 .monthClearRow{justify-content:flex-end;margin-top:6px}.monthClearRow button{font-size:13px}.clearConsent{border-top:1px solid var(--line);padding-top:12px;min-height:44px;color:var(--ink)}.clearActions{justify-content:flex-end}.clearActions button{flex:1}button.dangerFill{color:white;background:#b32638}button.dangerFill:disabled{opacity:.4}
+.utcClock{display:block;width:100%;margin:0 0 12px;font-variant-numeric:tabular-nums;font-size:14px;letter-spacing:.4px}.fsRef{display:block;width:100%;text-align:left;margin:5px 0}.fsRef:last-child{margin-bottom:10px}
