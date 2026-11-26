@@ -11,7 +11,7 @@ const minute=s=>/^([01]\d|2[0-3]):[0-5]\d$/.test(s||'')?Number(s.slice(0,2))*60+
 const clock=n=>n==null?'':`${String(Math.floor(n/60)%24).padStart(2,'0')}:${String(n%60).padStart(2,'0')}`;
 const dur=n=>`${Math.floor(n/60)}시간 ${n%60}분`;
 const fresh=()=>({version:1,people:{[own]:{}},shifts:defaults.map(x=>({...x})),inactive:[],training:{},extras:[],notes:[],flights:[],revisions:[],holidays:[],leave:{},rules:{daily:480,weekly:2400,streak:5,rest:0,payroll:1},base:'TAE',lastBackup:null,zone:'UTC'});
-function shift(s,c,d='9999-12-31'){const a=s.shifts.filter(x=>x.code===c&&x.from<=d).sort((a,b)=>b.from.localeCompare(a.from));return a[0]||((root.AIRPORTS||[]).some(x=>x.code===c)?{code:c,start:null,end:null,bg:'#fbdced',fg:'#9e386f',work:true}:null);}
+function shift(s,c,d='9999-12-31'){if(c==='__flight')return {code:c,start:null,end:null,bg:'#fbdced',fg:'#9e386f',work:true};const a=s.shifts.filter(x=>x.code===c&&x.from<=d).sort((a,b)=>b.from.localeCompare(a.from));return a[0]||((root.AIRPORTS||[]).some(x=>x.code===c)?{code:c,start:null,end:null,bg:'#fbdced',fg:'#9e386f',work:true}:null);}
 function trainingEntries(s,d){const v=s.training?.[d];return (Array.isArray(v)?v:v?[v]:[]).filter(validTraining).slice().sort((a,b)=>(a.start??Infinity)-(b.start??Infinity));}
 function trainingEntry(s,d){const a=trainingEntries(s,d);return a[0]||null;}
 function trainingTitle(s,d){const a=trainingEntries(s,d);return a.length?a[0].title+(a.length>1?' 외 '+(a.length-1)+'건':''):'';}
