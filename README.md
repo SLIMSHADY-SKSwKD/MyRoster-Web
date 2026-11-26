@@ -1,2 +1,16 @@
-# MyRoster-Web
-Personal Roster App
+# My Roster Web v0.1
+
+무료 정적 웹앱 초기판. HTML, CSS, JavaScript만 사용. 빌드 및 npm 설치 불필요.
+
+## GitHub Pages
+ZIP 압축을 풀고 내부의 파일을 저장소 최상위에 업로드합니다. Settings → Pages → Deploy from a branch → main → /(root) → Save. 생성된 사이트를 iPhone Safari에서 열어 홈 화면에 추가합니다.
+
+실제 근무표, 개인 사번, 동료 이름, 백업 파일은 공개 GitHub 저장소에 업로드하지 마세요. 앱에서 입력한 정보는 브라우저 localStorage에 저장합니다. 백업 JSON은 암호화하지 않습니다. 데이터 삭제나 브라우저 저장공간 정리에 대비해 수동 백업을 자주 생성하세요. AirDrop은 파일 앱에서 이용합니다.
+
+## 구현
+월간 캘린더, 빠른 입력, 코드 시간 버전 및 숨김, 개인 일정 시작시간 선택, 추가 근무, 엑셀/CSV 붙여넣기 및 REV 변경 이력, 같은 날짜 교환 검색 및 양쪽 검증, 월 경계 검사, 월/연 근무시간 및 연차, 구간별 RAMP 시간 및 UTC/KST, BLOCK TIME, ORDER/ADD 기록용 계산, 공항 거리 추정, 백업/복원, 근무표 ICS 내보내기, PWA 매니페스트 및 오프라인 캐시.
+
+## 한계 및 검증
+사진 OCR, 사번 자동 매칭, 세계지도, 기상/백그라운드 예약 알림, 위젯, Face ID, 자동 동기화, 서로 다른 날짜 교환, 공통 휴무 검색, 반차 사용 집계는 미구현. Apple Calendar는 파일 내보내기만 구현. 웹앱 전용 백업이며 기존 Swift JSON과 직접 호환되지 않습니다. 기본 출발 공항 TAE는 설정 가능. 근무시간은 KST 자정 분할, 휴게 미차감, 월요일 시작 주 기준의 참고용 계산. 근무표 자료 부족 시 정확한 수당 판단 불가. 연료는 사용자가 제시한 공식의 개인 기록/검산용이며 운항 적합성 판단 불가. 홀수 ORDER 잔여 1은 MAIN 2. CTR 상한 및 허용 불균형은 미설정.
+
+Node 계산 검증 23개 통과. JavaScript 문법 검사 통과. Chromium 인라인 DOM 스모크 테스트(모의 저장소) 통과. 실제 HTTP/파일 URL 브라우저 접근은 실행환경 정책으로 차단되어 실제 저장 지속성, 서비스 워커 오프라인 실행 및 iPhone/iPad Safari는 미검증. GitHub Pages 배포 미실행.
