@@ -1,6 +1,15 @@
 (function(root){'use strict';
 function slots(words,rows,cols,w,h){const cells=Array.from({length:rows},()=>Array.from({length:cols},()=>[]));for(const a of words||[]){const b=a.bbox;if(!b||!a.text?.trim())continue;const x=(b.x0+b.x1)/2,y=(b.y0+b.y1)/2,r=Math.floor(y/h*rows),c=Math.floor(x/w*cols);if(r>=0&&r<rows&&c>=0&&c<cols)cells[r][c].push({...a,x});}return cells.map(row=>row.map(cell=>{cell.sort((a,b)=>a.x-b.x);return {text:cell.map(a=>a.text).join(' '),confidence:cell.length?Math.min(...cell.map(a=>Number(a.confidence)||0)):0};}));}
 function code(raw){const x=String(raw||'').toUpperCase().replace(/\s+/g,'').replace(/[^A-Z0-9_-]/g,'');return x==='X'?'OFF':x==='AL'?'V':x;}
+// Only fix letter/digit lookalikes in the numeric suffix of registered C codes.
+function resolveCode(raw,confidence,known){const original=String(raw||'').trim(),c=code(original),score=Number(confidence)||0;
+ if(!c)return {code:'',raw:original,confidence:0,corrected:false,review:true};
+ if(known(c))return {code:c,raw:original,confidence:score,corrected:false,review:score<85};
+ const fixed=/^C[0-9OILSZB]{2}$/.test(c)?c[0]+c.slice(1).replace(/[O]/g,'0').replace(/[IL|]/g,'1').replace(/S/g,'5').replace(/Z/g,'2').replace(/B/g,'8'):c;
+ if(fixed!==c&&known(fixed))return {code:fixed,raw:original,confidence:Math.min(score,74),corrected:true,review:true};
+ return {code:c,raw:original,confidence:score,corrected:false,review:true};
+}
+function pickReading(a,b,known){if(!b.code)return a;if(!a.code||!known(a.code)&&known(b.code))return {...b,review:true};if(known(a.code)&&!known(b.code))return a;if(a.code===b.code){const x=b.confidence>a.confidence?b:a;return {...x,raw:a.raw||b.raw,corrected:a.corrected||b.corrected,review:a.review||b.review};}return {...a,review:true,alternative:b.code,confidence:Math.min(a.confidence,74)};}
 function identity(raw){const text=String(raw||'').replace(/\s+/g,''),match=text.match(/T\d{6}(?!\d)/i);return {id:match?.[0].toUpperCase()||'',name:(match?text.slice(0,match.index):text).replace(/[^가-힣A-Za-z]/g,'')};}
 function ownIndex(rows,id){const x=String(id||'').trim().toUpperCase();if(!/^T\d{6}$/.test(x))return -1;const hits=rows.map((r,i)=>r.id===x?i:-1).filter(i=>i>=0);return hits.length===1?hits[0]:-1;}
 function header(text){const t=String(text||''),m=t.match(/(20\d{2})\s*년?\s*[.\/-]?\s*(1[0-2]|0?[1-9])\s*월/),r=t.match(/REV\s*[:.]?\s*(\d+)/i);return {month:m?m[1]+'-'+m[2].padStart(2,'0'):null,rev:r?r[1]:null};}
@@ -10,4 +19,4 @@ function changes(people,rows,month,max,normalize,known){const out=[],used=new Se
 function rowBounds(points,w,h,days){if(points.length!==2||!Number.isInteger(days)||days<1)return null;const [a,b]=points;const left=Math.min(a.x,b.x),right=Math.max(a.x,b.x),top=Math.min(a.y,b.y),bottom=Math.max(a.y,b.y);if(left<0||top<0||right>1||bottom>1||(right-left)*w/days<3||(bottom-top)*h<4)return null;return {left,grid:left,top,right,bottom};}
 function rowLayout(days){const cols=6,rows=Math.ceil(days/cols),cw=160,ch=100;return {cols,rows,cw,ch,width:cols*cw,height:rows*ch};}
 function rowSlots(words,days){const l=rowLayout(days);return slots(words,l.rows,l.cols,l.width,l.height).flat().slice(0,days);}
-const api={slots,code,identity,ownIndex,header,advance,changes,rowBounds,rowLayout,rowSlots};if(typeof module!=='undefined')module.exports=api;else root.MROCR=api;})(globalThis);
+const api={slots,code,identity,ownIndex,header,advance,changes,rowBounds,rowLayout,rowSlots,resolveCode,pickReading};if(typeof module!=='undefined')module.exports=api;else root.MROCR=api;})(globalThis);
