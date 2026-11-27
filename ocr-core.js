@@ -2,7 +2,7 @@
 function slots(words,rows,cols,w,h){const cells=Array.from({length:rows},()=>Array.from({length:cols},()=>[]));for(const a of words||[]){const b=a.bbox;if(!b||!a.text?.trim())continue;const x=(b.x0+b.x1)/2,y=(b.y0+b.y1)/2,r=Math.floor(y/h*rows),c=Math.floor(x/w*cols);if(r>=0&&r<rows&&c>=0&&c<cols)cells[r][c].push({...a,x});}return cells.map(row=>row.map(cell=>{cell.sort((a,b)=>a.x-b.x);return {text:cell.map(a=>a.text).join(' '),confidence:cell.length?Math.min(...cell.map(a=>Number(a.confidence)||0)):0};}));}
 function code(raw){const x=String(raw||'').toUpperCase().replace(/\s+/g,'').replace(/[^A-Z0-9_-]/g,'');return x==='X'?'OFF':x==='AL'?'V':x;}
 // Only fix letter/digit lookalikes in the numeric suffix of registered C codes.
-function resolveCode(raw,confidence,known){const original=String(raw||'').trim(),c=code(original),score=Number(confidence)||0;
+function resolveCode(raw,confidence,known,normalize=code){const original=String(raw||'').trim(),c=normalize(original),score=Number(confidence)||0;
  if(!c)return {code:'',raw:original,confidence:0,corrected:false,review:true};
  if(known(c))return {code:c,raw:original,confidence:score,corrected:false,review:score<85};
  const fixed=/^C[0-9OILSZB]{2}$/.test(c)?c[0]+c.slice(1).replace(/[O]/g,'0').replace(/[IL|]/g,'1').replace(/S/g,'5').replace(/Z/g,'2').replace(/B/g,'8'):c;
